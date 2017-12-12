@@ -77,6 +77,8 @@ module spi_shift (clk, rst, latch, byte_sel, len, lsb, go,
                                                
   reg                            s_out = 1'b0;
   reg                            tip = 1'b0;
+  reg                            tip_dly = 1'b0;
+
                               
   reg      [SPI_CHAR_LEN_BITS:0] cnt;          // data bit count
   reg         [SPI_MAX_CHAR-1:0] data;         // shift register
@@ -121,13 +123,21 @@ module spi_shift (clk, rst, latch, byte_sel, len, lsb, go,
     tip <= #Tp 1'b0;
   end
   
+  always @(posedge clk or posedge rst)
+  begin
+    if (rst)
+      tip_dly <= #Tp 1'b0;
+    else
+      tip_dly <= #Tp tip;
+  end
+  
   // Sending bits to the line
   always @(posedge clk or posedge rst)
   begin
     if (rst)
       s_out   <= #Tp 1'b0;
     else
-      s_out <= #Tp (tx_clk || !tip) ? data[tx_bit_pos[SPI_CHAR_LEN_BITS-1:0]] : s_out;
+      s_out <= #Tp (tx_clk || !tip_dly) ? data[tx_bit_pos[SPI_CHAR_LEN_BITS-1:0]] : s_out;
   end
   
   // Receiving bits from the line

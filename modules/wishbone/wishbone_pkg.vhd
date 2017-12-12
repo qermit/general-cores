@@ -771,7 +771,8 @@ package wishbone_pkg is
       g_address_granularity : t_wishbone_address_granularity := WORD;
       g_divider_len         : integer := 16;
       g_max_char_len        : integer := 128;
-      g_num_slaves          : integer := 8);
+      g_num_slaves          : integer := 8;
+      g_enable_sdio         : boolean := false);
     port (
       clk_sys_i  : in  std_logic;
       rst_n_i    : in  std_logic;
@@ -789,6 +790,8 @@ package wishbone_pkg is
       pad_cs_o   : out std_logic_vector(g_num_slaves-1 downto 0);
       pad_sclk_o : out std_logic;
       pad_mosi_o : out std_logic;
+      pad_mosi_t : out std_logic;
+      pad_mosi_i : in  std_logic := '0';
       pad_miso_i : in  std_logic);
   end component;
 
@@ -798,7 +801,8 @@ package wishbone_pkg is
       g_address_granularity : t_wishbone_address_granularity := WORD;
       g_divider_len         : integer := 16;
       g_max_char_len        : integer := 128;
-      g_num_slaves          : integer := 8);
+      g_num_slaves          : integer := 8;
+      g_enable_sdio         : boolean := false);
     port (
       clk_sys_i  : in  std_logic;
       rst_n_i    : in  std_logic;
@@ -808,6 +812,8 @@ package wishbone_pkg is
       pad_cs_o   : out std_logic_vector(g_num_slaves-1 downto 0);
       pad_sclk_o : out std_logic;
       pad_mosi_o : out std_logic;
+      pad_mosi_t : out std_logic;
+      pad_mosi_i : in  std_logic := '0';
       pad_miso_i : in  std_logic);
   end component;
 

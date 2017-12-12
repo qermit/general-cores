@@ -1,9 +1,3 @@
---------------------------------------------------------------------------------
---  Modifications:
---      2016-08-24: by Jan Pospisil (j.pospisil@cern.ch)
---          * added assignments to (new) unspecified WB signals
---------------------------------------------------------------------------------
-
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -15,7 +9,8 @@ entity xwb_spi is
     g_address_granularity : t_wishbone_address_granularity := WORD;
     g_divider_len         : integer := 16;
     g_max_char_len        : integer := 128;
-    g_num_slaves          : integer := 8 
+    g_num_slaves          : integer := 8;
+    g_enable_sdio         : boolean := false
     );
 
   port(
@@ -30,6 +25,8 @@ entity xwb_spi is
     pad_cs_o   : out std_logic_vector(g_num_slaves-1 downto 0);
     pad_sclk_o : out std_logic;
     pad_mosi_o : out std_logic;
+    pad_mosi_t : out std_logic;
+    pad_mosi_i : in  std_logic := '0'; -- default value if not implementing sdio scheme
     pad_miso_i : in  std_logic
     );
 
@@ -43,7 +40,8 @@ architecture rtl of xwb_spi is
       g_address_granularity : t_wishbone_address_granularity;
       g_divider_len         : integer := 16;
       g_max_char_len        : integer := 128;
-      g_num_slaves          : integer := 8);
+      g_num_slaves          : integer := 8;
+      g_enable_sdio         : boolean := false);
     port (
       clk_sys_i  : in  std_logic;
       rst_n_i    : in  std_logic;
@@ -61,6 +59,8 @@ architecture rtl of xwb_spi is
       pad_cs_o   : out std_logic_vector(g_num_slaves-1 downto 0);
       pad_sclk_o : out std_logic;
       pad_mosi_o : out std_logic;
+      pad_mosi_t : out std_logic;
+      pad_mosi_i : in  std_logic := '0';     
       pad_miso_i : in  std_logic);
   end component;
   
@@ -72,7 +72,8 @@ begin
       g_address_granularity => g_address_granularity,
       g_divider_len         => g_divider_len,
       g_max_char_len        => g_max_char_len,
-      g_num_slaves          => g_num_slaves)
+      g_num_slaves          => g_num_slaves,
+      g_enable_sdio         => g_enable_sdio)
     port map (
       clk_sys_i  => clk_sys_i,
       rst_n_i    => rst_n_i,
@@ -90,8 +91,8 @@ begin
       pad_cs_o   => pad_cs_o,
       pad_sclk_o => pad_sclk_o,
       pad_mosi_o => pad_mosi_o,
+      pad_mosi_t => pad_mosi_t,
+      pad_mosi_i => pad_mosi_i,
       pad_miso_i => pad_miso_i);
-
-  slave_o.rty <= '0';
   
 end rtl;
